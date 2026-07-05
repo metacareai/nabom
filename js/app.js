@@ -169,13 +169,14 @@ function renderGuideList(containerId) {
     return;
   }
   guides.forEach(function (g) {
-    var div = document.createElement('div');
-    div.className = 'guide-item';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'guide-item';
     var d = new Date(g.createdAt);
     var dateStr = d.getFullYear() + '.' + (d.getMonth() + 1) + '.' + d.getDate();
-    div.innerHTML = '<div class="g-date">' + dateStr + '</div><div class="g-preview">' + g.text.slice(0, 60) + '...</div>';
-    div.addEventListener('click', function () { showGuideResult(g.text); });
-    el.appendChild(div);
+    btn.innerHTML = '<div class="g-date">' + dateStr + '</div><div class="g-preview">' + g.text.slice(0, 60) + '...</div>';
+    btn.addEventListener('click', function () { showGuideResult(g.text); });
+    el.appendChild(btn);
   });
 }
 
@@ -212,19 +213,20 @@ function renderChips() {
   var el = document.getElementById('signal-chips');
   el.innerHTML = '';
   CHIPS.forEach(function (chip) {
-    var span = document.createElement('span');
-    span.className = 'chip';
-    span.textContent = chip.label;
-    span.addEventListener('click', function () {
-      span.classList.toggle('active');
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chip';
+    btn.textContent = chip.label;
+    btn.addEventListener('click', function () {
+      btn.classList.toggle('active');
       var ta = document.getElementById('in-description');
-      if (span.classList.contains('active')) {
+      if (btn.classList.contains('active')) {
         ta.value = (ta.value ? ta.value.replace(/\s+$/, '') + ' ' : '') + chip.text;
       } else {
         ta.value = ta.value.split(chip.text).join('').replace(/\s+/g, ' ').trim();
       }
     });
-    el.appendChild(span);
+    el.appendChild(btn);
   });
 }
 
