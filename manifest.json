@@ -1,0 +1,14 @@
+{
+  "name": "나봄 - 체질 건강 가이드",
+  "short_name": "나봄",
+  "description": "사상체질과 검진 결과를 함께 살펴보는 건강 가이드 앱",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fdfbf6",
+  "theme_color": "#5b8c5a",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

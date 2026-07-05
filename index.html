@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>나봄 - 체질 건강 가이드</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5b8c5a">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 로그인/랜딩 -->
+<div id="scr-landing" class="screen active">
+  <div class="landing-wrap">
+    <h1 class="brand">나봄</h1>
+    <p class="brand-sub">나를 봄, 나의 몸을 봄, 나를 찾음</p>
+    <div class="card">
+      <label>이름</label>
+      <input type="text" id="in-name" placeholder="이름을 입력하세요">
+      <label>태어난 연도</label>
+      <input type="number" id="in-birth" placeholder="예: 1975">
+      <button class="btn-primary" id="btn-login">시작하기</button>
+      <p class="hint">이름과 태어난 연도로 나만의 기록을 이어갈 수 있어요.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 홈 -->
+<div id="scr-home" class="screen">
+  <header class="topbar">
+    <span class="topbar-title">나봄</span>
+    <button class="icon-btn" id="btn-go-mypage">마이페이지</button>
+  </header>
+  <div class="content">
+    <div id="home-no-survey" class="card hidden">
+      <h2>아직 체질 진단 전이에요</h2>
+      <p>간단한 설문으로 나의 체질 경향을 살펴보세요.</p>
+      <button class="btn-primary" id="btn-start-survey">설문 시작하기</button>
+    </div>
+    <div id="home-has-survey" class="card hidden">
+      <h2>내 체질 경향</h2>
+      <div class="ctype-badge" id="home-ctype-badge">-</div>
+      <p id="home-ctype-desc"></p>
+      <button class="btn-primary" id="btn-go-checkup">검진 결과로 맞춤 가이드 받기</button>
+      <button class="btn-secondary" id="btn-resurvey">설문 다시하기</button>
+    </div>
+    <div class="section-title">최근 가이드</div>
+    <div id="home-guide-list" class="guide-list"></div>
+  </div>
+</div>
+
+<!-- 설문 -->
+<div id="scr-survey" class="screen">
+  <header class="topbar">
+    <button class="icon-btn" id="btn-survey-back">닫기</button>
+    <span class="topbar-title">체질 설문</span>
+    <span></span>
+  </header>
+  <div class="content">
+    <div class="progress-bar"><div class="progress-fill" id="survey-progress"></div></div>
+    <div class="card">
+      <div id="survey-qnum" class="q-num"></div>
+      <div id="survey-question" class="q-text"></div>
+      <div id="survey-options" class="q-options"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 설문 결과 -->
+<div id="scr-result" class="screen">
+  <header class="topbar">
+    <span></span>
+    <span class="topbar-title">진단 결과</span>
+    <span></span>
+  </header>
+  <div class="content">
+    <div class="card center">
+      <div class="ctype-badge big" id="result-ctype-badge">-</div>
+      <h2 id="result-ctype-name"></h2>
+      <p id="result-ctype-desc"></p>
+      <div class="disclaimer">이 결과는 전통 체질 설문을 바탕으로 한 참고용 경향 분석이며, 의학적 진단이 아닙니다.</div>
+      <button class="btn-primary" id="btn-result-to-checkup">검진 결과로 맞춤 가이드 받기</button>
+      <button class="btn-secondary" id="btn-result-to-home">나중에 할게요</button>
+    </div>
+  </div>
+</div>
+
+<!-- 검진수치 입력 -->
+<div id="scr-checkup" class="screen">
+  <header class="topbar">
+    <button class="icon-btn" id="btn-checkup-back">뒤로</button>
+    <span class="topbar-title">검진 결과 입력</span>
+    <span></span>
+  </header>
+  <div class="content">
+    <div class="card">
+      <p class="hint">건강검진 결과가 있다면 입력해주세요. 모르는 항목은 비워두셔도 됩니다.</p>
+      <label>공복혈당 (mg/dL)</label>
+      <input type="number" id="ck-glucose" placeholder="예: 95">
+      <label>혈압 - 수축기/이완기 (mmHg)</label>
+      <div class="row-2">
+        <input type="number" id="ck-bp-sys" placeholder="수축기 예: 120">
+        <input type="number" id="ck-bp-dia" placeholder="이완기 예: 80">
+      </div>
+      <label>총 콜레스테롤 (mg/dL)</label>
+      <input type="number" id="ck-chol" placeholder="예: 190">
+      <label>체중 (kg)</label>
+      <input type="number" id="ck-weight" placeholder="예: 65">
+      <label>기타 특이사항 / 증상</label>
+      <textarea id="ck-memo" rows="3" placeholder="예: 소화가 잘 안 되고 손발이 차요"></textarea>
+      <button class="btn-primary" id="btn-checkup-submit">맞춤 가이드 받기</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI 가이드 결과 -->
+<div id="scr-guide" class="screen">
+  <header class="topbar">
+    <span></span>
+    <span class="topbar-title">맞춤 가이드</span>
+    <span></span>
+  </header>
+  <div class="content">
+    <div id="guide-loading" class="card center hidden">
+      <div class="spinner"></div>
+      <p>체질과 검진 결과를 함께 살펴보고 있어요...</p>
+    </div>
+    <div id="guide-result" class="card hidden">
+      <div class="ctype-badge" id="guide-ctype-badge">-</div>
+      <div id="guide-text" class="guide-text"></div>
+      <div class="disclaimer">이 가이드는 참고용 생활/식단 안내이며, 의학적 처방이 아닙니다. 건강 이상이 의심되면 반드시 병원 진료를 받으세요.</div>
+      <button class="btn-primary" id="btn-guide-to-home">홈으로</button>
+    </div>
+    <div id="guide-error" class="card hidden">
+      <p>가이드를 불러오지 못했어요. 잠시 후 다시 시도해주세요.</p>
+      <button class="btn-secondary" id="btn-guide-retry">다시 시도</button>
+      <button class="btn-secondary" id="btn-guide-error-home">홈으로</button>
+    </div>
+  </div>
+</div>
+
+<!-- 마이페이지 -->
+<div id="scr-mypage" class="screen">
+  <header class="topbar">
+    <button class="icon-btn" id="btn-mypage-back">뒤로</button>
+    <span class="topbar-title">마이페이지</span>
+    <span></span>
+  </header>
+  <div class="content">
+    <div class="card">
+      <div class="myinfo-row"><span>이름</span><span id="my-name"></span></div>
+      <div class="myinfo-row"><span>태어난 연도</span><span id="my-birth"></span></div>
+      <div class="myinfo-row"><span>내 체질</span><span id="my-ctype"></span></div>
+    </div>
+    <div class="section-title">가이드 기록</div>
+    <div id="mypage-guide-list" class="guide-list"></div>
+    <button class="btn-secondary" id="btn-logout">로그아웃</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
