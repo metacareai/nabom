@@ -68,6 +68,7 @@ var CHIPS = [
 var USER = null;      // 현재 로그인 사용자 (localStorage 기준)
 var _pendingCheckup = null;
 var _isRefining = false;
+var _returnToGuideAfterDiagnosis = false; // 가이드 화면에서 "체질 추가하기"로 진입한 경우
 
 // ===== 로컬 저장소 =====
 function loadUsers() {
@@ -184,16 +185,30 @@ document.getElementById('btn-mypage-back').addEventListener('click', function ()
 document.getElementById('btn-start-survey').addEventListener('click', startSurvey);
 document.getElementById('btn-resurvey').addEventListener('click', startSurvey);
 document.getElementById('btn-survey-back').addEventListener('click', function () { showScreen('scr-home'); });
-document.getElementById('btn-go-checkup').addEventListener('click', function () { showScreen('scr-checkup'); });
+document.getElementById('btn-go-checkup').addEventListener('click', function () { openCheckup(); });
 document.getElementById('btn-checkup-back').addEventListener('click', function () { showScreen('scr-home'); });
 document.getElementById('btn-result-to-home').addEventListener('click', function () { renderHome(); showScreen('scr-home'); });
-document.getElementById('btn-result-to-checkup').addEventListener('click', function () { showScreen('scr-checkup'); });
+document.getElementById('btn-result-to-checkup').addEventListener('click', function () { openCheckup(); });
 document.getElementById('btn-guide-to-home').addEventListener('click', function () { renderHome(); showScreen('scr-home'); });
 document.getElementById('btn-guide-error-home').addEventListener('click', function () { renderHome(); showScreen('scr-home'); });
 document.getElementById('btn-guide-retry').addEventListener('click', function () { requestGuide(_pendingCheckup); });
 document.getElementById('btn-diagnose-submit').addEventListener('click', submitDiagnosis);
 document.getElementById('btn-survey-retry').addEventListener('click', submitDiagnosis);
 document.getElementById('btn-result-refine').addEventListener('click', startRefine);
+document.getElementById('btn-guide-add-ctype').addEventListener('click', function () {
+  _returnToGuideAfterDiagnosis = true;
+  startSurvey();
+});
+
+function openCheckup() {
+  var hint = document.getElementById('checkup-mode-hint');
+  if (USER.ctype) {
+    hint.textContent = CTYPES[USER.ctype].name + ' 체질을 반영해서 더 정교하게 분석해드려요. 모르는 항목은 비워두셔도 됩니다.';
+  } else {
+    hint.textContent = '건강검진 결과가 있다면 입력해주세요. 모르는 항목은 비워두셔도 됩니다. 현대의학 관점에서 쉽게 풀어드려요.';
+  }
+  showScreen('scr-checkup');
+}
 
 // ===== 체질 진단 =====
 function startSurvey() {
@@ -289,7 +304,12 @@ function submitDiagnosis() {
     };
     upsertUser(USER);
     syncUserToFirestore();
-    showDiagnosisResult(ctype, reasoning);
+    if (_returnToGuideAfterDiagnosis) {
+      _returnToGuideAfterDiagnosis = false;
+      requestGuide(_pendingCheckup);
+    } else {
+      showDiagnosisResult(ctype, reasoning);
+    }
   }).catch(function (err) {
     console.warn('진단 요청 실패', err);
     document.getElementById('survey-loading').classList.add('hidden');
@@ -332,8 +352,8 @@ function requestGuide(checkup) {
   }
 
   getGuideFn({
-    ctype: USER.ctype,
-    ctypeName: CTYPES[USER.ctype].name,
+    ctype: USER.ctype || null,
+    ctypeName: USER.ctype ? CTYPES[USER.ctype].name : null,
     checkup: checkup
   }).then(function (res) {
     var text = (res.data && res.data.text) ? res.data.text : '';
@@ -354,7 +374,16 @@ function showGuideResult(text) {
   document.getElementById('guide-loading').classList.add('hidden');
   document.getElementById('guide-error').classList.add('hidden');
   document.getElementById('guide-result').classList.remove('hidden');
-  document.getElementById('guide-ctype-badge').textContent = CTYPES[USER.ctype].name;
+
+  var badge = document.getElementById('guide-ctype-badge');
+  if (USER.ctype) {
+    badge.textContent = CTYPES[USER.ctype].name;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+  document.getElementById('btn-guide-add-ctype').classList.toggle('hidden', !!USER.ctype);
+
   document.getElementById('guide-text').textContent = text;
   showScreen('scr-guide');
 }

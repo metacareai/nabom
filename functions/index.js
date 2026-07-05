@@ -15,7 +15,7 @@ const GENDER_NAMES = { male: '남성', female: '여성' };
 
 function buildPrompt(ctype, checkup) {
   var lines = [];
-  lines.push('체질: ' + (CTYPE_NAMES[ctype] || ctype));
+  if (ctype && CTYPE_NAMES[ctype]) lines.push('체질: ' + CTYPE_NAMES[ctype]);
   if (checkup.glucose) lines.push('공복혈당: ' + checkup.glucose + ' mg/dL');
   if (checkup.bpSys || checkup.bpDia) lines.push('혈압: ' + (checkup.bpSys || '?') + '/' + (checkup.bpDia || '?') + ' mmHg');
   if (checkup.chol) lines.push('총 콜레스테롤: ' + checkup.chol + ' mg/dL');
@@ -51,17 +51,19 @@ exports.getGuide = functions
 
     const ctype = data && data.ctype;
     const checkup = (data && data.checkup) || {};
-    if (!CTYPE_NAMES[ctype]) {
-      throw new functions.https.HttpsError('invalid-argument', '체질 정보가 올바르지 않습니다.');
-    }
+    const hasCtype = !!(ctype && CTYPE_NAMES[ctype]);
 
     const userInfo = buildPrompt(ctype, checkup);
 
-    const system = '당신은 사상체질과 서양의학 건강검진 결과를 함께 살펴보는 건강 가이드 도우미입니다. ' +
+    const system = '당신은 건강검진 수치를 현대의학 관점에서 알기 쉽게 풀어주는 건강 가이드 도우미입니다. ' +
       '사용자는 의료인이 아니며, 이 앱은 의료 행위를 하지 않습니다. ' +
       '반드시 "추천", "가이드", "도움" 같은 표현만 쓰고 "처방", "치료", "진단" 같은 의료 행위를 뜻하는 표현은 쓰지 마세요. ' +
-      '체질 특성과 입력된 검진 수치를 연결지어, 이 체질에서 해당 수치가 어떤 의미를 가질 수 있는지 쉽게 설명하고, ' +
-      '체질에 맞는 식단·생활 습관 가이드를 한국어로 4~6문단, 친근하고 따뜻한 말투로 작성하세요. ' +
+      '먼저 입력된 검진 수치가 일반적인 기준에서 정상 범위인지, 주의가 필요한지를 현대의학 관점에서 쉽게 설명하세요. ' +
+      (hasCtype
+        ? '그 다음, 이 사람의 사상체질(' + CTYPE_NAMES[ctype] + ')을 함께 고려했을 때 어떤 식단·생활 습관이 특히 더 잘 맞는지 이어서 설명하세요.'
+        : '체질 정보는 아직 없으니 일반적인 생활습관 가이드로 마무리하고, 마지막 문장에 "사상체질을 함께 알려주시면 체질에 맞춰 더 정교한 가이드를 드릴 수 있어요"라는 취지를 자연스럽게 덧붙이세요.'
+      ) + ' ' +
+      '전체 한국어 4~6문단, 친근하고 따뜻한 말투로 작성하세요. ' +
       '건강 이상이 의심되는 수치가 있다면 반드시 병원 진료를 권하는 문장을 포함하세요.';
 
     const body = {

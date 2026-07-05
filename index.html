@@ -39,16 +39,21 @@
     <button class="icon-btn" id="btn-go-mypage">마이페이지</button>
   </header>
   <div class="content">
+    <div class="card">
+      <h2>건강검진 결과 분석</h2>
+      <p>건강검진 수치를 입력하면 현대의학 관점에서 쉽게 풀어드려요.</p>
+      <button class="btn-primary" id="btn-go-checkup">검진 결과 분석받기</button>
+    </div>
+
     <div id="home-no-survey" class="card hidden">
-      <h2>아직 체질 진단 전이에요</h2>
-      <p>나를 간단히 소개하면 AI가 체질 경향을 살펴봐요.</p>
-      <button class="btn-primary" id="btn-start-survey">체질 진단받기</button>
+      <h2>더 정교하게 알고 싶다면</h2>
+      <p>나를 간단히 소개하면 사상체질까지 더해 검진 결과를 더 정교하게 해석해드려요.</p>
+      <button class="btn-secondary" id="btn-start-survey">체질 진단 추가하기</button>
     </div>
     <div id="home-has-survey" class="card hidden">
-      <h2>내 체질 경향</h2>
+      <h2>내 체질 경향 (정교화 적용중)</h2>
       <div class="ctype-badge" id="home-ctype-badge">-</div>
       <p id="home-ctype-desc"></p>
-      <button class="btn-primary" id="btn-go-checkup">검진 결과로 맞춤 가이드 받기</button>
       <button class="btn-secondary" id="btn-resurvey">진단 다시받기</button>
     </div>
     <div class="section-title">최근 가이드</div>
@@ -104,7 +109,7 @@
       <p id="result-ctype-desc"></p>
       <div id="result-ai-reason" class="guide-text"></div>
       <div class="disclaimer">이 결과는 AI가 소개글을 참고해 분석한 체질 경향이며, 의학적 진단이 아닙니다.</div>
-      <button class="btn-primary" id="btn-result-to-checkup">검진 결과로 맞춤 가이드 받기</button>
+      <button class="btn-primary" id="btn-result-to-checkup">이 체질 반영해서 검진 결과 분석받기</button>
       <button class="btn-secondary" id="btn-result-refine">결과가 잘 안 맞는 것 같아요, 더 설명할게요</button>
       <button class="btn-secondary" id="btn-result-to-home">나중에 할게요</button>
     </div>
@@ -115,12 +120,12 @@
 <div id="scr-checkup" class="screen">
   <header class="topbar">
     <button class="icon-btn" id="btn-checkup-back">뒤로</button>
-    <span class="topbar-title">검진 결과 입력</span>
+    <span class="topbar-title">검진 결과 분석</span>
     <span></span>
   </header>
   <div class="content">
     <div class="card">
-      <p class="hint">건강검진 결과가 있다면 입력해주세요. 모르는 항목은 비워두셔도 됩니다.</p>
+      <p class="hint" id="checkup-mode-hint">건강검진 결과가 있다면 입력해주세요. 모르는 항목은 비워두셔도 됩니다. 현대의학 관점에서 쉽게 풀어드려요.</p>
       <label>공복혈당 (mg/dL)</label>
       <input type="number" id="ck-glucose" placeholder="예: 95">
       <label>혈압 - 수축기/이완기 (mmHg)</label>
@@ -134,7 +139,7 @@
       <input type="number" id="ck-weight" placeholder="예: 65">
       <label>기타 특이사항 / 증상</label>
       <textarea id="ck-memo" rows="3" placeholder="예: 소화가 잘 안 되고 손발이 차요"></textarea>
-      <button class="btn-primary" id="btn-checkup-submit">맞춤 가이드 받기</button>
+      <button class="btn-primary" id="btn-checkup-submit">분석받기</button>
     </div>
   </div>
 </div>
@@ -149,12 +154,13 @@
   <div class="content">
     <div id="guide-loading" class="card center hidden">
       <div class="spinner"></div>
-      <p>체질과 검진 결과를 함께 살펴보고 있어요...</p>
+      <p>검진 결과를 살펴보고 있어요...</p>
     </div>
     <div id="guide-result" class="card hidden">
-      <div class="ctype-badge" id="guide-ctype-badge">-</div>
+      <div class="ctype-badge hidden" id="guide-ctype-badge">-</div>
       <div id="guide-text" class="guide-text"></div>
       <div class="disclaimer">이 가이드는 참고용 생활/식단 안내이며, 의학적 처방이 아닙니다. 건강 이상이 의심되면 반드시 병원 진료를 받으세요.</div>
+      <button class="btn-secondary hidden" id="btn-guide-add-ctype">사상체질 추가해서 더 정교하게 보기</button>
       <button class="btn-primary" id="btn-guide-to-home">홈으로</button>
     </div>
     <div id="guide-error" class="card hidden">
