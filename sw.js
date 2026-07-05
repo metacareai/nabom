@@ -1,4 +1,4 @@
-var CACHE = 'naboom-v6';
+var CACHE = 'nabom-v7';
 var ASSETS = [
   './',
   './index.html',
