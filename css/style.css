@@ -240,22 +240,6 @@ textarea { resize: vertical; }
   font-weight: 700;
 }
 
-input[type="file"] {
-  padding: 10px;
-  font-size: 13px;
-}
-
-.photo-preview {
-  margin-top: 10px;
-  text-align: center;
-}
-.photo-preview img {
-  max-width: 100%;
-  max-height: 240px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-}
-
 select {
   width: 100%;
   padding: 12px;

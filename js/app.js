@@ -67,8 +67,7 @@ var CHIPS = [
 // ===== 상태 =====
 var USER = null;      // 현재 로그인 사용자 (localStorage 기준)
 var _pendingCheckup = null;
-var _photoBase64 = null;
-var _photoMediaType = null;
+var _isRefining = false;
 
 // ===== 로컬 저장소 =====
 function loadUsers() {
@@ -194,14 +193,31 @@ document.getElementById('btn-guide-error-home').addEventListener('click', functi
 document.getElementById('btn-guide-retry').addEventListener('click', function () { requestGuide(_pendingCheckup); });
 document.getElementById('btn-diagnose-submit').addEventListener('click', submitDiagnosis);
 document.getElementById('btn-survey-retry').addEventListener('click', submitDiagnosis);
-document.getElementById('btn-photo-remove').addEventListener('click', clearPhoto);
-document.getElementById('in-photo').addEventListener('change', onPhotoSelected);
+document.getElementById('btn-result-refine').addEventListener('click', startRefine);
 
 // ===== 체질 진단 =====
 function startSurvey() {
+  _isRefining = false;
   document.getElementById('in-description').value = '';
   document.getElementById('in-illness').value = '';
-  clearPhoto();
+  document.getElementById('refine-note').classList.add('hidden');
+  renderChips();
+  document.getElementById('survey-form-card').classList.remove('hidden');
+  document.getElementById('survey-loading').classList.add('hidden');
+  document.getElementById('survey-error').classList.add('hidden');
+  showScreen('scr-survey');
+}
+
+// 진단 결과가 미흡하다고 느낄 때 - 이전 답변을 유지한 채 내용을 더 적어서 재진단
+function startRefine() {
+  _isRefining = true;
+  var s = USER.survey || {};
+  document.getElementById('in-description').value = s.description || '';
+  document.getElementById('in-illness').value = s.illness || '';
+  var note = document.getElementById('refine-note');
+  var ctName = CTYPES[USER.ctype] ? CTYPES[USER.ctype].name : '';
+  note.textContent = '이전 진단 결과: ' + ctName + '. 놓친 부분이나 다르게 느껴지는 점을 아래 내용에 더 적어주시면 다시 살펴볼게요.';
+  note.classList.remove('hidden');
   renderChips();
   document.getElementById('survey-form-card').classList.remove('hidden');
   document.getElementById('survey-loading').classList.add('hidden');
@@ -230,29 +246,6 @@ function renderChips() {
   });
 }
 
-function onPhotoSelected(e) {
-  var file = e.target.files && e.target.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function () {
-    var dataUrl = reader.result; // data:image/jpeg;base64,....
-    var parts = dataUrl.split(',');
-    _photoMediaType = parts[0].match(/data:(.*);base64/)[1];
-    _photoBase64 = parts[1];
-    document.getElementById('photo-preview-img').src = dataUrl;
-    document.getElementById('photo-preview').classList.remove('hidden');
-  };
-  reader.readAsDataURL(file);
-}
-
-function clearPhoto() {
-  _photoBase64 = null;
-  _photoMediaType = null;
-  document.getElementById('in-photo').value = '';
-  document.getElementById('photo-preview-img').src = '';
-  document.getElementById('photo-preview').classList.add('hidden');
-}
-
 function submitDiagnosis() {
   var description = document.getElementById('in-description').value.trim();
   var illness = document.getElementById('in-illness').value.trim();
@@ -268,14 +261,18 @@ function submitDiagnosis() {
     return;
   }
 
-  diagnoseFn({
+  var payload = {
     gender: USER.gender || '',
     birthYear: USER.birthYear,
     description: description,
-    illness: illness,
-    photoBase64: _photoBase64,
-    photoMediaType: _photoMediaType
-  }).then(function (res) {
+    illness: illness
+  };
+  if (_isRefining && USER.survey) {
+    payload.previousCtype = USER.ctype;
+    payload.previousReasoning = USER.survey.reasoning || '';
+  }
+
+  diagnoseFn(payload).then(function (res) {
     var ctype = res.data && res.data.ctype;
     var reasoning = (res.data && res.data.reasoning) || '';
     if (!CTYPES[ctype]) {
@@ -287,7 +284,6 @@ function submitDiagnosis() {
     USER.survey = {
       description: description,
       illness: illness,
-      hasPhoto: !!_photoBase64,
       reasoning: reasoning,
       diagnosedAt: Date.now()
     };

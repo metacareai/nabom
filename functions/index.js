@@ -96,37 +96,32 @@ exports.diagnose = functions
     const gender = (data && data.gender) || '';
     const birthYear = data && data.birthYear;
     const illness = (data && data.illness) || '';
-    const photoBase64 = data && data.photoBase64;
-    const photoMediaType = data && data.photoMediaType;
+    const previousCtype = data && data.previousCtype;
+    const previousReasoning = (data && data.previousReasoning) || '';
 
     var infoLines = [];
     if (gender && GENDER_NAMES[gender]) infoLines.push('성별: ' + GENDER_NAMES[gender]);
     if (birthYear) infoLines.push('태어난 연도: ' + birthYear);
     infoLines.push('자기소개: ' + description);
     if (illness) infoLines.push('지병/복용약: ' + illness);
+    if (previousCtype && CTYPE_NAMES[previousCtype]) {
+      infoLines.push('이전 AI 판단: ' + CTYPE_NAMES[previousCtype] + (previousReasoning ? ' (이유: ' + previousReasoning + ')' : ''));
+      infoLines.push('사용자는 이 이전 판단이 자신과 맞지 않는다고 느껴 위 내용을 더 자세히 적었습니다. 새로 적힌 내용을 충분히 반영해 다시 판단해주세요. 이전과 같은 체질이어도 괜찮지만, 다르게 느껴지면 바꿔도 됩니다.');
+    }
 
     const system = '당신은 사상의학의 전통적 진단 요소인 체형기상(몸의 형태), 용모사기(얼굴 생김새와 인상), ' +
       '성질재간(성격과 기질), 병증약리(잘 걸리는 병과 몸의 반응 경향)를 참고하여 ' +
       '사용자의 사상체질을 태양인, 태음인, 소양인, 소음인 중 하나로 판단하는 도우미입니다. ' +
       '사용자는 의료인이 아니며 이는 의학적 진단이 아닌 참고용 체질 경향 분석입니다. ' +
-      '사진이 함께 제공되면 체형과 인상을 참고하되, 외모를 평가하거나 부정적으로 표현하지 마세요. ' +
       '반드시 아래 형식을 정확히 지켜 답하세요(다른 말은 덧붙이지 마세요):\n' +
       '체질: (태양인|태음인|소양인|소음인) 중 하나만\n' +
       '이유: 2~4문장, 친근한 말투로 왜 그렇게 판단했는지 설명';
-
-    const content = [{ type: 'text', text: infoLines.join('\n') }];
-    if (photoBase64 && photoMediaType) {
-      content.push({
-        type: 'image',
-        source: { type: 'base64', media_type: photoMediaType, data: photoBase64 }
-      });
-    }
 
     const body = {
       model: 'claude-haiku-4-5',
       max_tokens: 500,
       system: system,
-      messages: [{ role: 'user', content: content }]
+      messages: [{ role: 'user', content: infoLines.join('\n') }]
     };
 
     try {

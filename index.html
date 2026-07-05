@@ -74,14 +74,7 @@
       <label>현재 앓고 있는 지병이나 복용 중인 약이 있나요?</label>
       <textarea id="in-illness" rows="2" placeholder="예: 없음 / 고혈압약 복용중"></textarea>
 
-      <label>체형·얼굴 사진 (선택)</label>
-      <p class="hint">사진을 올리면 AI가 체형과 인상을 함께 참고해 더 정확하게 진단해요. 사진은 진단에만 사용되고 저장되지 않아요.</p>
-      <input type="file" id="in-photo" accept="image/*" capture="environment">
-      <div id="photo-preview" class="photo-preview hidden">
-        <img id="photo-preview-img" src="" alt="업로드한 사진 미리보기">
-        <button class="btn-secondary" id="btn-photo-remove">사진 삭제</button>
-      </div>
-
+      <div id="refine-note" class="hint hidden"></div>
       <button class="btn-primary" id="btn-diagnose-submit">체질 진단받기</button>
     </div>
 
@@ -110,8 +103,9 @@
       <h2 id="result-ctype-name"></h2>
       <p id="result-ctype-desc"></p>
       <div id="result-ai-reason" class="guide-text"></div>
-      <div class="disclaimer">이 결과는 AI가 소개글·사진을 참고해 분석한 체질 경향이며, 의학적 진단이 아닙니다.</div>
+      <div class="disclaimer">이 결과는 AI가 소개글을 참고해 분석한 체질 경향이며, 의학적 진단이 아닙니다.</div>
       <button class="btn-primary" id="btn-result-to-checkup">검진 결과로 맞춤 가이드 받기</button>
+      <button class="btn-secondary" id="btn-result-refine">결과가 잘 안 맞는 것 같아요, 더 설명할게요</button>
       <button class="btn-secondary" id="btn-result-to-home">나중에 할게요</button>
     </div>
   </div>
