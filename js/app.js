@@ -1,14 +1,11 @@
 // ===== Firebase 설정 =====
-// TODO: Firebase 콘솔에서 실제 프로젝트를 만든 뒤 아래 값을 교체하세요.
-// 참고: 이 값들을 채우지 않아도 로그인/마이페이지는 로컬(localStorage)로 정상 동작합니다.
-// 체질 진단과 AI 맞춤 가이드(Cloud Function 호출)는 실제 Firebase 프로젝트 연결이 필요합니다.
 var firebaseConfig = {
-  apiKey: "REPLACE_WITH_YOUR_FIREBASE_API_KEY",
-  authDomain: "REPLACE_WITH_YOUR_PROJECT.firebaseapp.com",
-  projectId: "REPLACE_WITH_YOUR_PROJECT_ID",
-  storageBucket: "REPLACE_WITH_YOUR_PROJECT.firebasestorage.app",
-  messagingSenderId: "REPLACE_ME",
-  appId: "REPLACE_ME"
+  apiKey: "AIzaSyDdOPcXfbPMhRKHuf8IZERseeeobowwxt4",
+  authDomain: "nabom-bce45.firebaseapp.com",
+  projectId: "nabom-bce45",
+  storageBucket: "nabom-bce45.firebasestorage.app",
+  messagingSenderId: "47438296968",
+  appId: "1:47438296968:web:c7b340717bb2f3f2252c3d"
 };
 
 var _fbReady = false;
