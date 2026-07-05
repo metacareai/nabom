@@ -1,7 +1,7 @@
 {
-  "name": "나봄 - 체질 건강 가이드",
+  "name": "나봄 - 나의 몸을 알아보고 나를 찾다",
   "short_name": "나봄",
-  "description": "사상체질과 검진 결과를 함께 살펴보는 건강 가이드 앱",
+  "description": "건강검진 결과로 나의 몸을 알아보고, 사상체질까지 더해 나를 찾아가는 건강 앱",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fdfbf6",
